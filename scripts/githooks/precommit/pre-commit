@@ -8,6 +8,7 @@ if [[ -z $files ]]; then
 fi
 
 set -e
+
 for file in $files; do
     filesAbsPath="$root/$file $filesAbsPath"
 done
@@ -15,7 +16,7 @@ done
 golint --set_exit_status $filesAbsPath
 go vet $filesAbsPath
 unformattedFiles=$(gofmt -l $filesAbsPath)
-_check_exit_code() {
+_set_fmt_error_code() {
     if [[ -n unformattedFiles ]]; then
         echo -e "${yellow_bg}${black_txt}${bold}The following files are not properly formatted."
         echo -e "Run 'go fmt'${reset}"
@@ -23,6 +24,6 @@ _check_exit_code() {
         return 1
     fi
 }
-_check_exit_code
+_set_fmt_error_code
 
 set +e
