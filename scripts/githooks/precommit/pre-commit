@@ -2,25 +2,26 @@
 
 root=$(git rev-parse --show-toplevel)
 source $root/scripts/common.bash
-files=$(git status --porcelain | grep -v D | awk '{print $2}' | grep -E *.go$)
+files=$(git status --porcelain | grep -v -E "^\sD\s" | awk '{ $1=""; print}' | grep -E *.go$)
 if [[ -z $files ]]; then
     exit 0
 fi
 
 set -e
 
-for file in $files; do
-    filesAbsPath="$root/$file $filesAbsPath"
+for file in "$files"; do
+    file=${file#' '}
+    filesAbsPath="$root/${file} $filesAbsPath"
 done
 
-golint --set_exit_status $filesAbsPath
-go vet $filesAbsPath
-unformattedFiles="$(gofmt -l $filesAbsPath)"
+filesAbsPath=${filesAbsPath%' '}
+golint --set_exit_status "$filesAbsPath"
+go vet "$filesAbsPath"
+unformattedFiles=$(gofmt -l "$filesAbsPath")
 _set_fmt_error_code() {
     if [[ -n $unformattedFiles ]]; then
         echo -e "${yellow_bg}${black_txt}${bold}The following files are not properly formatted."
         echo -e "Run 'go fmt'${reset}"
-        sed 's#\s#\n#g' <<< $unformattedFiles
         return 1
     fi
 }
