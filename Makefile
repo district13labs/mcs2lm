@@ -3,19 +3,21 @@
 APP_PATH=/app
 BIN_PATH=${APP_PATH}/bin
 BIN_NAME=mcs2lm
-DOCKER_IMAGE_NAME=mcs2lm
+DOCKER_IMAGE_NAME=district13labs/golang:1.13
 VOLUME_NAME=mcs2lm
 DOCKER_RUN_CMD_PREFIX=docker run \
+-u $(shell id -u) \
 -ti \
---mount source=${VOLUME_NAME},destination=/app \
---rm ${DOCKER_IMAGE_NAME} \
- /bin/sh -c
+-v ${VOLUME_NAME}:${BIN_PATH} \
+-v ${PWD}:${APP_PATH} \
+--rm \
+${DOCKER_IMAGE_NAME} \
+/bin/bash -c
 
 setup-githooks:
 	@ln -s ${PWD}/scripts/githooks/precommit/pre-commit ${PWD}/.git/hooks/pre-commit
 
 setup: 
-	docker build . -t ${DOCKER_IMAGE_NAME} && \
 	docker volume create ${VOLUME_NAME}
 
 build:
