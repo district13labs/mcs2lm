@@ -1,12 +1,12 @@
-.PHONY: setup-githooks setup test
+.PHONY: build setup-githooks setup test
 
 APP_PATH=/app
-BIN_PATH=${APP_PATH}/bin
+BIN_PATH=${APP_PATH}-bin
 BIN_NAME=mcs2lm
-DOCKER_IMAGE_NAME=district13labs/golang:1.13
+DOCKER_IMAGE_NAME=mcs2lm
 VOLUME_NAME=mcs2lm
 DOCKER_RUN_CMD_PREFIX=docker run \
--u $(shell id -u) \
+-u $(shell id -u):$(shell id -g) \
 -ti \
 -v ${VOLUME_NAME}:${BIN_PATH} \
 -v ${PWD}:${APP_PATH} \
@@ -18,6 +18,7 @@ setup-githooks:
 	@ln -s ${PWD}/scripts/githooks/precommit/pre-commit ${PWD}/.git/hooks/pre-commit
 
 setup: 
+	docker build -t ${DOCKER_IMAGE_NAME} -f ${PWD}/Dockerfile --build-arg USER_ID=$(shell id -u) --build-arg GROUP_ID=$(shell id -g) .
 	docker volume create ${VOLUME_NAME}
 
 build:
