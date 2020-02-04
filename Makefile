@@ -1,4 +1,4 @@
-.PHONY: build setup-githooks setup test
+.PHONY: setup-githooks setup build purge test shell
 
 APP_PATH=/app
 BIN_PATH=${APP_PATH}-bin
