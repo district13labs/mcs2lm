@@ -24,5 +24,13 @@ setup:
 build:
 	${DOCKER_RUN_CMD_PREFIX} "go build -o ${BIN_PATH}/${BIN_NAME}"
 
+purge:
+	docker rmi ${DOCKER_IMAGE_NAME} && \
+	docker volume rm ${VOLUME_NAME}
+
 test:
 	${DOCKER_RUN_CMD_PREFIX} "go test ./... -v"
+
+shell:
+	${DOCKER_RUN_CMD_PREFIX} "/bin/bash"
+
