@@ -22,7 +22,7 @@ setup:
 	docker volume create ${VOLUME_NAME}
 
 build:
-	${DOCKER_RUN_CMD_PREFIX} "go build -o ${BIN_PATH}/${BIN_NAME}"
+	${DOCKER_RUN_CMD_PREFIX} "go build -o ${BIN_PATH}/${BIN_NAME} ./cmd"
 
 purge:
 	docker rmi ${DOCKER_IMAGE_NAME} && \
