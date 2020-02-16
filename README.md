@@ -7,6 +7,7 @@ Core component for launching minecraft servers.
 - docker
 - id
 - make
+- bash
 
 ## Development
 
@@ -26,16 +27,15 @@ The build process will mount the volume to `/app-bin/` and builds the binary to 
 
 To build the CLI application, please run `make build`.
 
-### Pass arguments to the container
-The run script basically passes every argument inside the container. The path you're at in the beginning is `/app`.
-
-Usage: `./scripts/app/run.sh foo bar`
-
 ### Run the CLI application
-Use the run script in order to control the built CLI application. From the repository root: `./scripts/app/run.sh /app-bin/mcs2lm`
+Use the run script in order to control the built CLI application. From the repository root: `./scripts/app/run.sh cli`
+
+For more information about what you can do with the run script, please run `./scripts/app/run.sh` and you'll see a help message.
 
 ### Run tests
+To check every automated tests, call the run script command from the repository root: `./scripts/app/run.sh test ./...`
 
-To check every automated tests, call the run script command from the repository root: `./scripts/app/run.sh go test ./...`
+Run top-level tests matching "Foo", such as "TestFooBar": `./scripts/app/run.sh test -run Foo `
 
-Run top-level tests matching "Foo", such as "TestFooBar": `./scripts/app/run.sh go test -run Foo `
+### Open a shell inside the container
+You can use the run script to go inside the container running `./scripts/app/run.sh shell`
