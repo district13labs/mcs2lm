@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+source ${PWD}/.env
+
+pre_commit=pre-commit
+if [[ ${docker} = "true" ]]; then
+    pre_commit=pre-commit-docker
+fi
+
+ln -s ${PWD}/scripts/githooks/precommit/${pre_commit} ${PWD}/.git/hooks/pre-commit

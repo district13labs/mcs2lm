@@ -12,6 +12,7 @@ case $COMMAND in
         --rm ${DOCKER_IMAGE_NAME} \
         ${BIN_PATH}/${BIN_NAME} "${@:2}"
         ;;
+
     "test")
         docker run \
         -u $(id -u):$(id -g) \
@@ -21,6 +22,7 @@ case $COMMAND in
         --rm ${DOCKER_IMAGE_NAME} \
         go test "${@:2}"
         ;;
+
     "shell")
         docker run \
         -u $(id -u):$(id -g) \
@@ -30,6 +32,7 @@ case $COMMAND in
         --rm ${DOCKER_IMAGE_NAME} \
         ${SHELL}
         ;;
+        
     *)
         echo "
 The purpose of this script is to make the development and manual testing easier.
