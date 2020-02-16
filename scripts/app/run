@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+source ${PWD}/.env
+
+DOCKER_CMD_PREFIX="docker run \
+        -u $(id -u):$(id -g) \
+        -ti \
+        -v ${VOLUME_NAME}:/${BIN_PATH} \
+        -v ${PWD}:${APP_PATH} \
+        --rm ${DOCKER_IMAGE_NAME}"
+
+case $1 in
+    "mcli")
+        shift
+        ${DOCKER_CMD_PREFIX} \
+        ${BIN_PATH}/${BIN_NAME} $@
+        ;;
+
+    "test")
+        shift
+        ${DOCKER_CMD_PREFIX} \
+        go test $@
+        ;;
+
+    "shell")
+        shift
+        eval "${DOCKER_CMD_PREFIX} ${SHELL} -c \"$@\""
+        ;;
+
+    *)
+        cat << HELP
+Usage: ./scripts/app/run [command]
+
+Commands:
+---------
+    mcli     Pass arguments to the built application.
+    test     Run tests. Basically prefixes your arguments with "go test" .
+    shell    Opens a shell.
+HELP
+esac

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+docker_command="docker run -i --rm -v $PWD:/app district13labs/golang:1.13"
+source ${PWD}/scripts/githooks/precommit/pre-commit
