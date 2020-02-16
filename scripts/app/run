@@ -10,18 +10,20 @@ DOCKER_CMD_PREFIX="docker run \
 
 case $1 in
     "mcli")
+        shift
         ${DOCKER_CMD_PREFIX} \
-        ${BIN_PATH}/${BIN_NAME} "${@:2}"
+        ${BIN_PATH}/${BIN_NAME} $@
         ;;
 
     "test")
+        shift
         ${DOCKER_CMD_PREFIX} \
-        go test "${@:2}"
+        go test $@
         ;;
 
     "shell")
-        ${DOCKER_CMD_PREFIX} \
-        ${SHELL}
+        shift
+        eval "${DOCKER_CMD_PREFIX} ${SHELL} -c \"$@\""
         ;;
 
     *)
