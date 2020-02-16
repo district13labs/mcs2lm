@@ -1,25 +1,23 @@
-.PHONY: setup-githooks setup build purge test shell
+.PHONY: setup-githooks setup build purge
 
 include .env
-
-DOCKER_RUN_CMD_PREFIX=docker run \
--u $(shell id -u):$(shell id -g) \
--ti \
--v ${VOLUME_NAME}:${BIN_PATH} \
--v ${PWD}:${APP_PATH} \
---rm \
-${DOCKER_IMAGE_NAME} \
-/bin/bash -c
 
 setup-githooks:
 	@DOCKER=${DOCKER} ${PWD}/scripts/githooks/precommit/setup-precommit
 
 setup:
-	docker build -t ${DOCKER_IMAGE_NAME} -f ${PWD}/Dockerfile --build-arg USER_ID=$(shell id -u) --build-arg GROUP_ID=$(shell id -g) --build-arg BIN_PATH=${BIN_PATH}. 
+	docker build -t ${DOCKER_IMAGE_NAME} -f ${PWD}/Dockerfile --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) --build-arg BIN_PATH=${BIN_PATH}. 
 	docker volume create ${VOLUME_NAME}
 
 build:
-	${DOCKER_RUN_CMD_PREFIX} "go build -o ${BIN_PATH}/${BIN_NAME} ./cmd"
+	docker run \
+	-u $(id -u):$(id -g) \
+	-ti \
+	-v ${VOLUME_NAME}:${BIN_PATH} \
+	-v ${PWD}:${APP_PATH} \
+	--rm \
+	${DOCKER_IMAGE_NAME} \
+	go build -o ${BIN_PATH}/${BIN_NAME} ./cmd
 
 purge:
 	docker rmi ${DOCKER_IMAGE_NAME} && \
