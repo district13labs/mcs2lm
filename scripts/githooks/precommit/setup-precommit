@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-source ${PWD}/.env
-
 pre_commit=pre-commit
-if [[ ${docker} = "true" ]]; then
+if [[ ${DOCKER} = "true" ]]; then
     pre_commit=pre-commit-docker
 fi
 

@@ -12,7 +12,7 @@ ${DOCKER_IMAGE_NAME} \
 /bin/bash -c
 
 setup-githooks:
-	eval ${PWD}/scripts/githooks/precommit/setup-precommit
+	@DOCKER=${DOCKER} ${PWD}/scripts/githooks/precommit/setup-precommit
 
 setup:
 	docker build -t ${DOCKER_IMAGE_NAME} -f ${PWD}/Dockerfile --build-arg USER_ID=$(shell id -u) --build-arg GROUP_ID=$(shell id -g) --build-arg BIN_PATH=${BIN_PATH}. 

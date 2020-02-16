@@ -1,46 +1,4 @@
 #!/usr/bin/env bash
 
 docker_command="docker run -i --rm -v $PWD:/app district13labs/golang:1.13"
-root=$(eval "$docker_command git rev-parse --show-toplevel")
-source ${PWD}/scripts/common.bash
-files=$(git status --porcelain | sed "s#^\s#''#" | grep -v -E "^D\s" | awk '{ $1=""; print}' | grep -E "*.go(\")?$")
-if [[ -z $files ]]; then
-    exit 0
-fi
-
-_set_fmt_error_code() {
-    if [[ -n $1 ]]; then
-        echo -e "${yellow_bg}${black_txt}${bold}Format error:${reset} $1"
-        return 1
-    fi
-}
-
-# Store error code internally.
-# On the first instance of error code other than 0
-# the commit fails.
-_check_error_code() {
-    if [[ $1 != 0 ]]; then
-      error=1
-      printf "\n"
-    fi
-}
-
-error=0
-# Format the output of git status
-files=$(sed 's#^\s#''#g' <<< $files)
-files=$(sed 's#^"#''#g' <<< $files)
-files=$(sed 's#"$#''#g' <<< $files)
-while read file; do
-    abs="$root/$file"
-    $docker_command golint --set_exit_status "$abs"
-    _check_error_code $?
-
-    $docker_command go vet "$abs"
-    _check_error_code $?
-
-    unformattedFile=$($docker_command gofmt -l "$abs")
-    _set_fmt_error_code "$unformattedFile"
-    _check_error_code $?
-done <<< $files
-
-exit $error
+source ${PWD}/scripts/githooks/precommit/pre-commit

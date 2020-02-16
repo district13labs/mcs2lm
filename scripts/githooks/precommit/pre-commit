@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 root=$(git rev-parse --show-toplevel)
-source $root/scripts/common.bash
+source ${PWD}/scripts/common.bash
 files=$(git status --porcelain | sed "s#^\s#''#" | grep -v -E "^D\s" | awk '{ $1=""; print}' | grep -E "*.go(\")?$")
 if [[ -z $files ]]; then
     exit 0
