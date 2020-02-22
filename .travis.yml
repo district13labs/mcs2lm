@@ -18,6 +18,7 @@ jobs:
         format:
             $HOME/scripts/app/run format ./...
     test:
-        run-test:
+        setup:
             make setup
+        run:
             $HOME/scripts/app/run test ./...
