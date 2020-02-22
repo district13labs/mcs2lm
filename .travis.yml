@@ -11,10 +11,15 @@ services:
 
 jobs:
     include:
-        - stage: setup
-          name: 'Setup'
         - stage: lint
-          name: 'Run QA'
-        - script: ./scripts/app/run lint ./...
-        - script: ./scripts/app/run format ./...
-        - script: ./scripts/app/run test ./...
+        name: 'Run lint'
+        script:
+            - make setup
+            - ./scripts/app/run lint ./...
+            - ./scripts/app/run format ./...
+
+        - stage: test
+        name: 'Run tests'
+        script: 
+            - make setup
+            - ./scripts/app/run test ./...
