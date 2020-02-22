@@ -20,3 +20,14 @@ normal='\e[0m'
 bold='\e[1m'
 underline='\e[4m'
 blinking='\e[5m'
+
+# Store error code internally.
+# On the first instance of error code other than 0
+# the execution fails.
+error=0
+_check_error_code() {
+    if [[ $1 != 0 ]]; then
+        error=1
+        printf "\n"
+    fi
+}
