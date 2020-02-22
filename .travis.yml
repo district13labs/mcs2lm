@@ -10,15 +10,13 @@ services:
     - docker
 
 jobs:
-    lint:
-        setup:
-            make setup
-        lint:
-            $HOME/scripts/app/run lint ./...
-        format:
-            $HOME/scripts/app/run format ./...
-    test:
-        setup:
-            make setup
-        run:
-            $HOME/scripts/app/run test ./...
+    include:
+        - stage: lint
+        name: 'Run lint'
+        script: make setup
+        script: ./scripts/app/run lint ./...
+        script: ./scripts/app/run format ./...
+
+        - stage: test
+        name: 'Run tests'
+        script: ./scripts/app/run test ./...
