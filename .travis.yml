@@ -15,12 +15,10 @@ before_install:
 jobs:
     include:
         - stage: qa
-          -
             name: 'Run lint'
             script:
                 - ./scripts/app/run lint ./...
                 - ./scripts/app/run format .
-          -
             name: 'Run tests'
             script: 
                 - ./scripts/app/run test ./...
