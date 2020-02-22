@@ -1,0 +1,23 @@
+language: go
+
+go:
+- "1.13"
+
+os:
+- linux
+
+services:
+    - docker
+
+jobs:
+    lint:
+        setup:
+            make setup
+        lint:
+            $HOME/scripts/app/run lint ./...
+        format:
+            $HOME/scripts/app/run format ./...
+    test:
+        run-test:
+            make setup
+            $HOME/scripts/app/run test ./...
