@@ -23,7 +23,7 @@ blinking='\e[5m'
 
 # Store error code internally.
 # On the first instance of error code other than 0
-# the commit fails.
+# the execution fails.
 error=0
 _check_error_code() {
     if [[ $1 != 0 ]]; then
