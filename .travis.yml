@@ -16,7 +16,7 @@ jobs:
           script:
             - make setup
             - ./scripts/app/run lint ./...
-            - ./scripts/app/run format ./...
+            - ./scripts/app/run format .
         - stage: test
           name: 'Run tests'
           script: 
