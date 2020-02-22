@@ -14,11 +14,12 @@ jobs:
         - stage: lint
           name: 'Run lint'
           script:
-            - make setup
             - ./scripts/app/run lint ./...
             - ./scripts/app/run format .
         - stage: test
           name: 'Run tests'
           script: 
-            - make setup
             - ./scripts/app/run test ./...
+
+before_install:
+    make setup
