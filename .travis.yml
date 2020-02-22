@@ -12,13 +12,13 @@ services:
 jobs:
     include:
         - stage: lint
-        name: 'Run lint'
-        script:
+          name: 'Run lint'
+          script:
             - make setup
             - ./scripts/app/run lint ./...
             - ./scripts/app/run format ./...
         - stage: test
-        name: 'Run tests'
-        script: 
+          name: 'Run tests'
+          script: 
             - make setup
             - ./scripts/app/run test ./...
