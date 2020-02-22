@@ -14,16 +14,6 @@ _set_fmt_error_code() {
     fi
 }
 
-# Store error code internally.
-# On the first instance of error code other than 0
-# the commit fails.
-_check_error_code() {
-    if [[ $1 != 0 ]]; then
-        error=1
-        printf "\n"
-    fi
-}
-
 _get_dir() {
     uppermostDir=$(dirname $1)
     if [[ "$uppermostDir" != '.' ]]; then
@@ -32,7 +22,6 @@ _get_dir() {
     fi
 }
 
-error=0
 # Format the output of git status
 files=$(sed 's#^\s#''#g' <<< $files)
 files=$(sed 's#^"#''#g' <<< $files)

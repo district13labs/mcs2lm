@@ -42,8 +42,10 @@ mcli help [command]  print a detailed information of a command.
 ```
 For further information of how to add new commands or extend current functionality refer to `cmd/README.md`.
 
-### Run tests
+### Run QA related commands
 `./scripts/app/run test` will call `go test` and propagates the argument list.
+`./scripts/app/run lint` will call `go lint` along with `go vet` and propagates the argument list.
+`./scripts/app/run format` will call `gofmt` and propagates the argument list.
 
 ### Open a shell inside the container
 You can use the run script to enter the container by running `./scripts/app/run shell`.
