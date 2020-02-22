@@ -19,8 +19,16 @@ _set_fmt_error_code() {
 # the commit fails.
 _check_error_code() {
     if [[ $1 != 0 ]]; then
-      error=1
-      printf "\n"
+        error=1
+        printf "\n"
+    fi
+}
+
+_get_dir() {
+    uppermostDir=$(dirname $1)
+    if [[ "$uppermostDir" != '.' ]]; then
+        previous=$uppermostDir
+        _get_dir "$uppermostDir"
     fi
 }
 
@@ -30,14 +38,21 @@ files=$(sed 's#^\s#''#g' <<< $files)
 files=$(sed 's#^"#''#g' <<< $files)
 files=$(sed 's#"$#''#g' <<< $files)
 while read file; do
+    file=$(cut -f 2 -d '>' <<< $file)
+    file=${file#' '}
     abs="$root/$file"
-    golint --set_exit_status "$abs"
-    _check_error_code $?
+    _get_dir "$file"
 
-    go vet "$abs"
+    ${docker_command} golint --set_exit_status "$abs"
     _check_error_code $?
+    
+    if [[ $lastDir != $previous ]]; then
+      ${docker_command} go vet "$root/$previous"
+      _check_error_code $?
+      lastDir=$previous
+    fi
 
-    unformattedFile=$(gofmt -l "$abs")
+    unformattedFile=$(${docker_command} gofmt -l "$abs")
     _set_fmt_error_code "$unformattedFile"
     _check_error_code $?
 done <<< $files

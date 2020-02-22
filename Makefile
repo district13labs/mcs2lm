@@ -2,6 +2,8 @@
 
 include .env
 
+DOCKER=true
+
 setup-githooks:
 	@DOCKER=${DOCKER} ${PWD}/scripts/githooks/precommit/setup-precommit
 
@@ -10,14 +12,7 @@ setup:
 	docker volume create ${VOLUME_NAME}
 
 build:
-	docker run \
-	-u $(shell id -u):$(shell id -g) \
-	-ti \
-	-v ${VOLUME_NAME}:${BIN_PATH} \
-	-v ${PWD}:${APP_PATH} \
-	--rm \
-	${DOCKER_IMAGE_NAME} \
-	go build -o ${BIN_PATH}/${BIN_NAME} ./cmd
+	@DOCKER=${DOCKER} ${PWD}/scripts/app/build
 
 purge:
 	docker rmi ${DOCKER_IMAGE_NAME} && \

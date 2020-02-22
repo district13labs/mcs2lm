@@ -1,10 +1,9 @@
 package main
 
-import (
-	"fmt"
-	"os"
-)
+// CliName holds the name of the cli tool.
+// This is a build time variable.
+var CliName string
 
 func main() {
-	fmt.Println(os.Args)
+	registry.initialize(CliName)
 }
