@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+pre_commit=pre-commit
+if [[ ${DOCKER} = "true" ]]; then
+    pre_commit=pre-commit-docker
+fi
+
+ln -s ${PWD}/scripts/githooks/precommit/${pre_commit} ${PWD}/.git/hooks/pre-commit

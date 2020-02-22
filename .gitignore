@@ -1,0 +1,7 @@
+# Idea, text editor specifics
+.idea
+.vscode
+
+# Project specifics
+/bin
+/vendor

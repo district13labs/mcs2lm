@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+source ${PWD}/.env
+source ${PWD}/scripts/common.bash
+
+DOCKER_CMD_PREFIX="docker run \
+        -u $(id -u):$(id -g) \
+        -ti \
+        -v ${VOLUME_NAME}:/${BIN_PATH} \
+        -v ${PWD}:${APP_PATH} \
+        --rm ${DOCKER_IMAGE_NAME}"
+
+case $1 in
+    "mcli")
+        shift
+        ${DOCKER_CMD_PREFIX} \
+        ${BIN_PATH}/${BIN_NAME} $@
+        ;;
+
+    "test")
+        shift
+        ${DOCKER_CMD_PREFIX} \
+        go test $@
+        ;;
+
+    "lint")
+        shift
+        ${DOCKER_CMD_PREFIX} \
+        golint --set_exit_status "$@"
+        _check_error_code $?
+        go vet "$@"
+        _check_error_code $?
+        ;;
+
+    "format")
+        shift
+        gofmt -l "$@"
+        _check_error_code $?
+        ;;
+
+    "shell")
+        shift
+        eval "${DOCKER_CMD_PREFIX} ${SHELL} -c \"$@\""
+        ;;
+
+    *)
+        cat << HELP
+Usage: ./scripts/app/run [command]
+
+Commands:
+---------
+    mcli    [args]      Pass arguments to the built application.
+    test    [args]      Run tests. Prefixes your arguments with "go test" .
+    lint    [args]      Run golint and go vet.
+    format  [args]      Run "gofmt -l" with your arguments.
+    shell   [args]      Open a shell.
+HELP
+esac
+
+exit $error

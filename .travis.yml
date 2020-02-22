@@ -1,0 +1,25 @@
+language: go
+
+go:
+- "1.13"
+
+os:
+- linux
+
+services:
+    - docker
+
+before_install:
+    make setup
+
+jobs:
+    include:
+        - stage: qa
+          name: 'Run lint'
+          script:
+            - ./scripts/app/run lint ./...
+            - ./scripts/app/run format .
+        -
+          name: 'Run tests'
+          script: 
+            - ./scripts/app/run test ./...

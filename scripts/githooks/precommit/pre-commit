@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+root=$(${docker_command} git rev-parse --show-toplevel)
+source ${PWD}/scripts/common.bash
+files=$(git status --porcelain | sed "s#^\s#''#" | grep -v -E "^D\s" | awk '{ $1=""; print}' | grep -E "*.go(\")?$")
+if [[ -z $files ]]; then
+    exit 0
+fi
+
+_set_fmt_error_code() {
+    if [[ -n $1 ]]; then
+        echo -e "${yellow_bg}${black_txt}${bold}Format error:${reset} $1"
+        return 1
+    fi
+}
+
+_get_dir() {
+    uppermostDir=$(dirname $1)
+    if [[ "$uppermostDir" != '.' ]]; then
+        previous=$uppermostDir
+        _get_dir "$uppermostDir"
+    fi
+}
+
+# Format the output of git status
+files=$(sed 's#^\s#''#g' <<< $files)
+files=$(sed 's#^"#''#g' <<< $files)
+files=$(sed 's#"$#''#g' <<< $files)
+while read file; do
+    file=$(cut -f 2 -d '>' <<< $file)
+    file=${file#' '}
+    abs="$root/$file"
+    _get_dir "$file"
+
+    ${docker_command} golint --set_exit_status "$abs"
+    _check_error_code $?
+    
+    if [[ $lastDir != $previous ]]; then
+      ${docker_command} go vet "$root/$previous"
+      _check_error_code $?
+      lastDir=$previous
+    fi
+
+    unformattedFile=$(${docker_command} gofmt -l "$abs")
+    _set_fmt_error_code "$unformattedFile"
+    _check_error_code $?
+done <<< $files
+
+exit $error

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+source ./.env
+
+if [[ ! $DOCKER = "true" ]]; then
+    BIN_PATH=bin
+fi
+
+build="go build -ldflags '-X main.CliName=${BIN_NAME}' -a -o ${BIN_PATH}/${BIN_NAME} ./cmd &&
+	echo -e 'MCS2LM cli tool was successfully compiled to ${BIN_PATH}/${BIN_NAME}'"
+
+if [[ $DOCKER = "true" ]]; then
+	docker run \
+	-u $(id -u):$(id -g) \
+	-ti \
+	-v ${VOLUME_NAME}:${BIN_PATH} \
+	-v ${PWD}:${APP_PATH} \
+	--rm \
+	${DOCKER_IMAGE_NAME} \
+    /bin/bash -c "eval \"$build\""
+else
+    eval "$build"
+fi
