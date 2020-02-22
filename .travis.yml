@@ -9,17 +9,18 @@ os:
 services:
     - docker
 
-jobs:
-    include:
-        - stage: lint
-          name: 'Run lint'
-          script:
-            - ./scripts/app/run lint ./...
-            - ./scripts/app/run format .
-        - stage: test
-          name: 'Run tests'
-          script: 
-            - ./scripts/app/run test ./...
-
 before_install:
     make setup
+
+jobs:
+    include:
+        - stage: qa
+          -
+            name: 'Run lint'
+            script:
+                - ./scripts/app/run lint ./...
+                - ./scripts/app/run format .
+          -
+            name: 'Run tests'
+            script: 
+                - ./scripts/app/run test ./...
